@@ -1,3 +1,4 @@
+var async = require("async");
 var fs = require("fs");
 var http = require("http");
 var net = require("net");
@@ -22,21 +23,41 @@ function redisServer(port, next) {
   function installLocalRedis(next) {
     if (fs.existsSync(__dirname + "/.redis"))
       return next();
-    var unzipper = spawn("tar", ["xz"], { cwd: __dirname });
-    var request = http.get(
-      "http://redis.googlecode.com/files/redis-2.6.12.tar.gz",
-      function(response) {
-        response.pipe(unzipper.stdin);
-        unzipper.on("exit", function unzipDone() {
-          fs.renameSync(__dirname + "/redis-2.6.12",
-                        __dirname + "/.redis");
-          var builder = spawn("make", [], { cwd: __dirname + "/.redis" });
-          builder.stdout.on("data", function(){});
-          builder.on("exit", function() { next(); });
+
+    function cleanupTempDir(next) {
+      if (fs.existsSync(__dirname + "/redis-2.6.12"))
+        return next();
+      spawn("rm", ["-rf", __dirname + "/redis-2.6.12"])
+        .on("exit", function() { next(); });
+    }
+
+    function actualInstall(next) {
+      var unzipper = spawn("tar", ["xz"], { cwd: __dirname });
+      var request = http.get(
+        "http://redis.googlecode.com/files/redis-2.6.12.tar.gz",
+        function(response) {
+          response.pipe(unzipper.stdin);
+          unzipper.on("exit", function unzipDone() {
+            var builder = spawn("make", [], { cwd: __dirname + "/redis-2.6.12" });
+            builder.stdout.on("data", function(){});
+            builder.on("exit", function() { next(); });
+          });
         });
-      });
+    }
+
+    function renameDir(next) {
+      fs.rename(__dirname + "/redis-2.6.12",
+                __dirname + "/.redis",
+                next);
+    }
+    
+    async.series([
+      cleanupTempDir,
+      actualInstall,
+      renameDir
+    ], next);
   };
-  
+
   installLocalRedis(function(err) {
     if (err) return next(err);
     var localRedis = spawn(".redis/src/redis-server",

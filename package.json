@@ -1,9 +1,12 @@
 {
   "name": "disposable-redis",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Automated creation and shutdown of redis server, intended for test scripts.",
   "main": "index.js",
-  "os": [ "darwin", "linux" ],
+  "os": [
+    "darwin",
+    "linux"
+  ],
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha -R landing -b -t 300000"
   },
@@ -17,6 +20,7 @@
     "mocha": "~1.9.0"
   },
   "dependencies": {
-    "redis": "~0.8.3"
+    "redis": "~0.8.3",
+    "async": "~0.2.7"
   }
 }
