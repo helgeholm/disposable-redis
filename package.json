@@ -1,12 +1,16 @@
 {
   "name": "disposable-redis",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Automated creation and shutdown of redis server, intended for test scripts.",
   "main": "index.js",
+  "os": [ "darwin", "linux" ],
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha -R landing -b -t 300000"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deestan/disposable-redis.git"
+  },
   "author": "Helge S. Holm",
   "license": "MIT",
   "devDependencies": {
