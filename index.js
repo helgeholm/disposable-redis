@@ -27,10 +27,11 @@ function redisServer(port, next) {
       "http://redis.googlecode.com/files/redis-2.6.12.tar.gz",
       function(response) {
         response.pipe(unzipper.stdin);
-        unzipper.stdin.on("close", function unzipDone() {
+        unzipper.on("exit", function unzipDone() {
           fs.renameSync(__dirname + "/redis-2.6.12",
                         __dirname + "/.redis");
           var builder = spawn("make", [], { cwd: __dirname + "/.redis" });
+          builder.stdout.on("data", function(){});
           builder.on("exit", function() { next(); });
         });
       });
