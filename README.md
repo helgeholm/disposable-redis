@@ -71,4 +71,4 @@ Will assure a server is running, connect a `node-redis` client, and callback wit
 __Arguments__
 
 * port - default=6380. Run the server on this port.
-* callback(err, server) - Called after client object is operational or an error has occured. `err` is `null` if no error occured.
+* callback(err, client) - Called after client object is operational or an error has occured. `err` is `null` if no error occured.
