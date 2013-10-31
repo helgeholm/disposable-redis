@@ -19,7 +19,7 @@ disposableRedis.server(function(err, server) {
 
 ```javascript
 // I don't really care about the server, just gimme a node-redis client over it
-disposableRedis.server(function(err, result) {
+disposableRedis.client(function(err, result) {
   result.client.set("key", "value");
   result.close();
 });
