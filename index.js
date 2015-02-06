@@ -32,7 +32,7 @@ function redisServer(port, next) {
     }
 
     function cleanupTempDir(next) {
-      if (fs.existsSync(__dirname + "/redis-2.6.12"))
+      if (!fs.existsSync(__dirname + "/redis-2.6.12"))
         return next();
       spawn("rm", ["-rf", __dirname + "/redis-2.6.12"])
         .on("exit", function() { next(); });
