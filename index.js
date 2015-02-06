@@ -21,7 +21,7 @@ function redisServer(port, next) {
   port = port || DEFAULT_REDIS_PORT;
 
   function installLocalRedis(next) {
-    if (fs.existsSync(__dirname + "/.redis"))
+    if (fs.existsSync(__dirname + "/.redis/src/redis-server"))
       return next();
 
     function cleanupTempDir(next) {
