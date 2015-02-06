@@ -24,6 +24,13 @@ function redisServer(port, next) {
     if (fs.existsSync(__dirname + "/.redis/src/redis-server"))
       return next();
 
+    function removeOldAttemptedInstall(next) {
+      if (!fs.existsSync(__dirname + "/.redis"))
+        return next();
+      spawn("rm", ["-rf", __dirname + "/.redis"])
+        .on("exit", function() { next(); });
+    }
+
     function cleanupTempDir(next) {
       if (fs.existsSync(__dirname + "/redis-2.6.12"))
         return next();
@@ -53,6 +60,7 @@ function redisServer(port, next) {
     
     async.series([
       cleanupTempDir,
+      removeOldAttemptedInstall,
       actualInstall,
       renameDir
     ], next);
