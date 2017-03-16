@@ -1,6 +1,6 @@
 {
   "name": "disposable-redis",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Automated creation and shutdown of redis server, intended for test scripts.",
   "main": "index.js",
   "os": [
