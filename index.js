@@ -32,20 +32,20 @@ function redisServer(port, next) {
     }
 
     function cleanupTempDir(next) {
-      if (!fs.existsSync(__dirname + "/redis-2.6.12"))
+      if (!fs.existsSync(__dirname + "/redis-3.2.8"))
         return next();
-      spawn("rm", ["-rf", __dirname + "/redis-2.6.12"])
+      spawn("rm", ["-rf", __dirname + "/redis-3.2.8"])
         .on("exit", function() { next(); });
     }
 
     function actualInstall(next) {
       var unzipper = spawn("tar", ["xz"], { cwd: __dirname });
       var request = http.get(
-        "http://redis.googlecode.com/files/redis-2.6.12.tar.gz",
+        "http://download.redis.io/releases/redis-3.2.8.tar.gz",
         function(response) {
           response.pipe(unzipper.stdin);
           unzipper.on("exit", function unzipDone() {
-            var builder = spawn("make", [], { cwd: __dirname + "/redis-2.6.12" });
+            var builder = spawn("make", [], { cwd: __dirname + "/redis-3.2.8" });
             builder.stdout.on("data", function(){});
             builder.on("exit", function() { next(); });
           });
@@ -53,7 +53,7 @@ function redisServer(port, next) {
     }
 
     function renameDir(next) {
-      fs.rename(__dirname + "/redis-2.6.12",
+      fs.rename(__dirname + "/redis-3.2.8",
                 __dirname + "/.redis",
                 next);
     }
