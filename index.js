@@ -71,15 +71,22 @@ function redisServer(port, next) {
     var localRedis = spawn(".redis/src/redis-server",
                            ["--port", port],
                            { cwd: __dirname });
+    var hasExited = false;
+    localRedis.on(
+      "exit",
+      function(_code, _signal) {
+        hasExited = true;
+      });
     var retObj = {
       port: port,
       close: function shutdownServer(next) {
-        localRedis.kill("SIGKILL");
+        if (hasExited) return next && next();
         localRedis.on(
           "exit",
           function(_code, _signal) {
             next && next();
           });
+        localRedis.kill("SIGKILL");
         localRedis = null;
       }
     };
